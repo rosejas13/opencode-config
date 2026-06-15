@@ -1,6 +1,6 @@
 # Skill & Plugin Catalog
 
-This config relies on three external skill packages and one local plugin. Each is installed independently — the config wires them together.
+This config wires together skill packages (loaded on-demand), MCP servers (persistent background tools), and local plugins. Each is installed independently.
 
 ## agent-skills (44 skills)
 
@@ -128,3 +128,15 @@ This config relies on three external skill packages and one local plugin. Each i
 | Plugin | Source | Purpose |
 |---|---|---|
 | `enum-sanitizer.js` | Local (`plugins/`) | Sanitizes enum values in API requests |
+
+## MCP Servers
+
+MCP (Model Context Protocol) servers provide persistent background tools — distinct from skills, which are loaded on-demand workflow instructions. These are configured directly in `opencode.jsonc` under the `mcp` key.
+
+| Server | Type | Source | Purpose |
+|---|---|---|---|
+| `gh_grep` | Remote | `https://mcp.grep.app` | Real-world code examples across 1M+ GitHub repos |
+| `obsidian_brain` | Local | `obsidian-brain` (npm) | Semantic search + knowledge graph over a personal Obsidian vault |
+| `memory` | Local | `@modelcontextprotocol/server-memory` (npm) | Cross-session persistent knowledge graph stored as JSONL |
+
+**ACP (Agent Communication Protocol)** is not currently configured. ACP enables direct agent-to-agent communication; add it if your workflow requires coordinated multi-agent task decomposition.
