@@ -1,0 +1,187 @@
+{
+	"$schema": "https://opencode.ai/config.json",
+
+	// ── Agent Instructions ──────────────────────────────────────────────────
+	"instructions": ["~/.config/opencode/agent-skills/AGENTS.md"],
+
+	// ── Skill Discovery ─────────────────────────────────────────────────────
+	"skills": {
+		"paths": [
+			"~/.config/opencode/agent-skills/skills",
+			"~/.config/opencode/impeccable/.opencode/skills"
+		]
+	},
+
+	// ── Model Strategy ──────────────────────────────────────────────────────
+	// Default: deepseek-v4-flash-free. Same for small_model.
+	// Ollama local models configured below as fallback when cloud is unavailable.
+	"model": "opencode/deepseek-v4-flash-free",
+	"small_model": "opencode/deepseek-v4-flash-free",
+
+	"provider": {
+		"ollama": {
+			"npm": "@ai-sdk/openai-compatible",
+			"name": "Ollama (local)",
+			"options": {
+				"baseURL": "http://localhost:11434/v1"
+			},
+			"models": {
+				"qw35":     { "name": "Qwen 3.5",           "tools": true },
+				"qw3516k":  { "name": "Qwen 3.5 16K",       "tools": true, "model": "qw35:16k" },
+				"qw25code": { "name": "Qwen 2.5 Code",      "tools": true },
+				"dsr1":     { "name": "DeepSeek R1",         "tools": true },
+				"gem4":     { "name": "Gemma 4",             "tools": true },
+				"phi4":     { "name": "Phi 4",               "tools": true },
+				"phi4r":    { "name": "Phi 4 Reasoning",     "tools": true }
+			}
+		}
+	},
+
+	"disabled_providers": ["ollama", "anthropic"],
+
+	// ── Token Management ────────────────────────────────────────────────────
+	"compaction": {
+		"auto": true,
+		"prune": true,
+		"tail_turns": 20,
+		"reserved": 10000
+	},
+
+	"tool_output": {
+		"max_lines": 200,
+		"max_bytes": 48000
+	},
+
+	// ── File Watcher ────────────────────────────────────────────────────────
+	"watcher": {
+		"ignore": [
+			"node_modules/**",
+			".next/**",
+			".beads/**",
+			"dist/**",
+			"build/**",
+			".git/**",
+			"*.tsbuildinfo",
+			".direnv/**"
+		]
+	},
+
+	// ── Safety ──────────────────────────────────────────────────────────────
+	"autoupdate": "notify",
+	"snapshot": true,
+
+	"attachment": {
+		"image": {
+			"auto_resize": true,
+			"max_width": 2000,
+			"max_height": 2000,
+			"max_base64_bytes": 5242880
+		}
+	},
+
+	// ── Permission System ───────────────────────────────────────────────────
+	// Safe defaults: read/write/edit always allowed, bash uses allow-list with
+	// catch-all "ask" for destructive operations.
+	"permission": {
+		"read": "allow",
+		"glob": "allow",
+		"grep": "allow",
+		"list": "allow",
+		"edit": "allow",
+		"write": "allow",
+		"task": "allow",
+		"webfetch": "allow",
+		"websearch": "allow",
+
+		"bash": {
+			"*": "ask",
+			"basename *": "ask",
+
+			// Core workflow tools
+			"bd *": "allow",
+			"cd *": "allow",
+			"gh *": "allow",
+			"git *": "allow",
+			"git stash *": "ask",
+			"npm *": "allow",
+			"npx *": "allow",
+			"docker *": "allow",
+			"docker-compose *": "allow",
+			"dolt *": "allow",
+			"supabase *": "allow",
+			"vercel *": "allow",
+			"gbrain *": "allow",
+
+			// Read-only inspection
+			"cat *": "allow",
+			"diff *": "allow",
+			"echo *": "allow",
+			"find *": "allow",
+			"grep *": "allow",
+			"head *": "allow",
+			"ls *": "allow",
+			"rg *": "allow",
+			"sort *": "allow",
+			"tail *": "allow",
+			"type *": "allow",
+			"wc *": "allow",
+			"which *": "allow",
+			"whoami": "allow",
+
+			// File operations
+			"cp": "allow",
+			"mkdir *": "allow",
+			"touch *": "allow",
+			"sed *": "allow",
+
+			// Utilities
+			"comm *": "allow",
+			"date *": "allow",
+			"gc *": "allow",
+			"pip *": "allow",
+			"pip3 *": "allow",
+			"python *": "allow",
+			"python3 *": "allow",
+			"curl *": "allow"
+		}
+	},
+
+	// ── MCP Servers ─────────────────────────────────────────────────────────
+	"mcp": {
+		// GitHub Code Search — find real-world code examples across 1M+ repos
+		"gh_grep": {
+			"type": "remote",
+			"url": "https://mcp.grep.app",
+			"enabled": true
+		},
+
+		// Obsidian Brain — semantic search + knowledge graph over an Obsidian vault.
+		// Replace VAULT_PATH with your own vault location.
+		"obsidian_brain": {
+			"type": "local",
+			"command": [
+				"node",
+				"/opt/homebrew/lib/node_modules/obsidian-brain/dist/cli/index.js",
+				"server"
+			],
+			"enabled": true,
+			"environment": {
+				"VAULT_PATH": "${HOME}/Documents/Obsidian/second-brain"
+			}
+		},
+
+		// Cross-session memory — persistent knowledge graph stored as JSONL.
+		// Replace MEMORY_FILE_PATH with your own path.
+		"memory": {
+			"type": "local",
+			"command": [
+				"node",
+				"/opt/homebrew/lib/node_modules/@modelcontextprotocol/server-memory/dist/index.js"
+			],
+			"enabled": true,
+			"environment": {
+				"MEMORY_FILE_PATH": "${HOME}/.config/opencode/memory.jsonl"
+			}
+		}
+	}
+}
