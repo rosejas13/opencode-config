@@ -65,6 +65,10 @@ Each serves a distinct need: `gh_grep` finds real-world code examples across Git
     limits.sh
 ```
 
+## Catalog
+
+See [CATALOG.md](CATALOG.md) for a full inventory of all 97 skills across the three dependency packages (agent-skills, gstack, impeccable) plus local plugins.
+
 ## Related
 
 - [Portfolio](https://nova-mir.vercel.app) — main portfolio showcasing shipped projects
